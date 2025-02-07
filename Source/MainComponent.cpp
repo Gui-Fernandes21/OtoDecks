@@ -20,20 +20,8 @@ MainComponent::MainComponent()
         setAudioChannels (0, 2);
     }
 
-    addAndMakeVisible(playButton);
-    addAndMakeVisible(stopButton);
-    addAndMakeVisible(loadButton);
-    
-    addAndMakeVisible(volSlider);
-    addAndMakeVisible(speedSlider);
-
-    playButton.addListener(this);
-    stopButton.addListener(this);
-    loadButton.addListener(this);
-
-    volSlider.addListener(this);
-    speedSlider.addListener(this);
-    volSlider.setRange(0.0, 1.0);
+    addAndMakeVisible(deckGUI1);
+    addAndMakeVisible(deckGUI2);
 }
 
 MainComponent::~MainComponent()
@@ -45,19 +33,12 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    phase = 0.0;
-    dphase = 0.0001;
-
-    formatManager.registerBasicFormats();
-
-    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    // transportSource.getNextAudioBlock(bufferToFill);
-    resampleSource.getNextAudioBlock(bufferToFill);
+    player1.getNextAudioBlock(bufferToFill);
 }
 
 //void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
@@ -80,11 +61,7 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
 
 void MainComponent::releaseResources()
 {
-    // This will be called when the audio device stops, or when it is being
-    // restarted due to a setting change.
-
-    // For more details, see the help for AudioProcessor::releaseResources()
-    transportSource.releaseResources();
+    player1.releaseResources();
 }
 
 //==============================================================================
@@ -98,60 +75,6 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    // This is called when the MainContentComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
-    double rowH = getHeight() / 5;
-
-    playButton.setBounds(0, 0, getWidth(), rowH);
-    stopButton.setBounds(0, rowH, getWidth(), rowH);
-    loadButton.setBounds(0, getHeight() - rowH, getWidth(), rowH);
-
-    volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
-    speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
-}
-
-void MainComponent::buttonClicked(juce::Button* button) 
-{
-    if (button == &playButton) {
-        std::cout << "Play Button was clicked" << std::endl;
-        transportSource.start();
-    };
-    if (button == &stopButton) {
-        std::cout << "Stop Button was clicked" << std::endl;
-        transportSource.stop();
-    };
-    if (button == &loadButton) {
-        auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
-
-        fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
-            {
-                juce::File chosenFile = chooser.getResult();
-                loadURL(juce::URL{ chosenFile });
-            });
-        
-    }
-}
-
-void MainComponent::sliderValueChanged(juce::Slider* slider)
-{
-    if (slider == &volSlider) {
-        transportSource.setGain(slider->getValue());
-    }
-    if (slider == &speedSlider) {
-        resampleSource.setResamplingRatio(slider->getValue());
-    }
-}
-
-void MainComponent::loadURL(juce::URL audioURL) 
-{
-
-    auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
-    
-    if (reader != nullptr) // file was successfully loaded
-    {
-        std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader,true));
-        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-        readerSource.reset(newSource.release());
-    }
+    deckGUI1.setBounds(0, 0, getWidth() / 2, getHeight());
+    deckGUI2.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
 }
