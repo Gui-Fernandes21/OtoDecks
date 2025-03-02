@@ -10,14 +10,13 @@
 
 #include "DJAudioPlayer.h"
 
-DJAudioPlayer::DJAudioPlayer() {};
+DJAudioPlayer::DJAudioPlayer(juce::AudioFormatManager& _formatManager) : formatManager(_formatManager) {};
 DJAudioPlayer::~DJAudioPlayer() {};
 
 
 // =====================================================================================
 void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) 
 {
-    formatManager.registerBasicFormats();
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 };
@@ -69,6 +68,22 @@ void DJAudioPlayer::setPosition(double posInSecs)
     transportSource.setPosition(posInSecs);
 };
 
+void DJAudioPlayer::setPositionRelative(double pos) {
+    if (pos < 0 || pos > 1.0)
+    {
+        std::cout << "DJAudioPlayer::setPositionRelative pos should be between 0 and 1" << std::endl;
+    }
+    else {
+        double posInSecs = transportSource.getLengthInSeconds() * pos;
+        setPosition(posInSecs);
+    }
+};
+
+double DJAudioPlayer::getPositionRelative()
+{
+    return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
+};
+
 void DJAudioPlayer::start() 
 {
     transportSource.start();
@@ -77,3 +92,4 @@ void DJAudioPlayer::stop()
 {
     transportSource.stop();
 };
+

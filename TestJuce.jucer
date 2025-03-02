@@ -4,12 +4,20 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="T17Ck8" name="TestJuce">
     <GROUP id="{6B955D0F-E687-1882-A354-9C6FCFD62CCB}" name="Source">
+      <FILE id="gZqBCc" name="PlaylistComponent.cpp" compile="1" resource="0"
+            file="Source/PlaylistComponent.cpp"/>
+      <FILE id="NZRfAO" name="PlaylistComponent.h" compile="0" resource="0"
+            file="Source/PlaylistComponent.h"/>
       <FILE id="smwbEH" name="DeckGUI.cpp" compile="1" resource="0" file="Source/DeckGUI.cpp"/>
       <FILE id="CRKZl5" name="DeckGUI.h" compile="0" resource="0" file="Source/DeckGUI.h"/>
       <FILE id="ruLXHm" name="DJAudioPlayer.cpp" compile="1" resource="0"
             file="Source/DJAudioPlayer.cpp"/>
       <FILE id="cqaZB6" name="DJAudioPlayer.h" compile="0" resource="0" file="Source/DJAudioPlayer.h"/>
       <FILE id="yzskRd" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="d8NxPH" name="WaveformDisplay.cpp" compile="1" resource="0"
+            file="Source/WaveformDisplay.cpp"/>
+      <FILE id="Trv4cx" name="WaveformDisplay.h" compile="0" resource="0"
+            file="Source/WaveformDisplay.h"/>
       <FILE id="Sv1hRV" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="Xqr0af" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>

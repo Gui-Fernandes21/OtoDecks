@@ -664,6 +664,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\PlaylistComponent.cpp">
+      <Filter>TestJuce\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\DeckGUI.cpp">
       <Filter>TestJuce\Source</Filter>
     </ClCompile>
@@ -671,6 +674,9 @@
       <Filter>TestJuce\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
+      <Filter>TestJuce\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\WaveformDisplay.cpp">
       <Filter>TestJuce\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
@@ -3519,10 +3525,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\PlaylistComponent.h">
+      <Filter>TestJuce\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\DeckGUI.h">
       <Filter>TestJuce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\DJAudioPlayer.h">
+      <Filter>TestJuce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\WaveformDisplay.h">
       <Filter>TestJuce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
