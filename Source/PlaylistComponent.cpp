@@ -104,6 +104,8 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber, int c
 };
 
 void PlaylistComponent::buttonClicked(juce::Button* button)
-{
-    std::cout << "Button clicked: " << button->getComponentID() << std::endl;
+{   
+    int id = std::stoi(button->getComponentID().toStdString());
+
+    std::cout << "Button clicked: " << trackTitles[id] << std::endl;
 };
