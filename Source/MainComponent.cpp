@@ -23,6 +23,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(deckGUI1);
     addAndMakeVisible(deckGUI2);
 
+    addAndMakeVisible(playlistComponent);
+
     formatManager.registerBasicFormats();
 }
 
@@ -48,24 +50,6 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     mixerSource.getNextAudioBlock(bufferToFill);
 }
 
-//void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
-//{
-//    auto* leftChan = bufferToFill.buffer->getWritePointer(0, bufferToFill.startSample);
-//    auto* rightChan = bufferToFill.buffer->getWritePointer(0, bufferToFill.startSample);
-//
-//    for (auto i = 0; i < bufferToFill.numSamples; ++i)
-//    {
-//        // double sample = rand.nextDouble() * 0.25;
-//        // double sample = fmod(phase, 0.2);
-//        double sample = sin(phase) * 0.1;
-//        leftChan[i] = sample;
-//        rightChan[i] = sample;
-//
-//        phase += dphase;
-//    }
-//    //bufferToFill.clearActiveBufferRegion(); 
-//}
-
 void MainComponent::releaseResources()
 {
     player1.releaseResources();
@@ -84,6 +68,10 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    deckGUI1.setBounds(0, 0, getWidth() / 2, getHeight());
-    deckGUI2.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
+    deckGUI1.setBounds(0, 0, getWidth() / 2, getHeight() / 2);
+    deckGUI2.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight() / 2);
+
+    playlistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+
+
 }
