@@ -21,11 +21,18 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
-    addAndMakeVisible(loadButton);
 
     addAndMakeVisible(volSlider);
+    addAndMakeVisible(volLabel);
+
     addAndMakeVisible(speedSlider);
+    addAndMakeVisible(speedLabel);
+    
     addAndMakeVisible(posSlider);
+    addAndMakeVisible(posLabel);
+
+    addAndMakeVisible(revSlider);
+    addAndMakeVisible(revLabel);
 
     addAndMakeVisible(waveformDisplay);
 
@@ -33,13 +40,40 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     stopButton.addListener(this);
     loadButton.addListener(this);
 
-    volSlider.addListener(this);
-    speedSlider.addListener(this);
-    posSlider.addListener(this);
 
-    volSlider.setRange(0.0, 1.0);
+
+    speedSlider.addListener(this);
+    speedSlider.setValue(1.0);
     speedSlider.setRange(0.0, 10.0);
+    speedSlider.setNumDecimalPlacesToDisplay(2);
+    speedSlider.setTextValueSuffix(" Speed.");
+    speedLabel.attachToComponent(&speedSlider, true);
+    speedSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+
+
+    posSlider.addListener(this);
     posSlider.setRange(0.0, 1.0);
+    posSlider.setTooltip("Drag slider to control where the song should play from");
+    //posSlider.setSliderStyle(juce::Slider::LinearBar);
+    posLabel.setText(juce::String("Position of the music"), juce::dontSendNotification);
+    posLabel.attachToComponent(&volSlider, true);
+    posSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
+
+
+    volSlider.addListener(this);
+    volSlider.setValue(.5);
+    volSlider.setRange(0.0, 1.0);
+    volSlider.setNumDecimalPlacesToDisplay(2);
+    volSlider.setTextValueSuffix(" Vol.");
+    volLabel.attachToComponent(&volSlider, true);
+    volSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+
+    revSlider.setTextValueSuffix(" Rev.");
+    revLabel.attachToComponent(&revSlider, true);
+    revSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+    revSlider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
+    revSlider.setTooltip("Drag slider to control the reverb");
+    
 
     startTimer(500);
 
@@ -66,23 +100,25 @@ void DeckGUI::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (14.0f));
-    g.drawText ("DeckGUI", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
+    // g.drawText ("DeckGUI", getLocalBounds(),
+                //juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void DeckGUI::resized()
 {
     double rowH = getHeight() / 8;
 
-    playButton.setBounds(0, 0, getWidth(), rowH);
-    stopButton.setBounds(0, rowH, getWidth(), rowH);
-    loadButton.setBounds(0, getHeight() - rowH, getWidth(), rowH);
+    //loadButton.setBounds(0, getHeight() - rowH, getWidth(), rowH);
+    waveformDisplay.setBounds(0, 0, getWidth(), rowH * 2);
+    posSlider.setBounds(0, rowH * 2, getWidth(), rowH);
 
-    volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
     speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
-    posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
+    volSlider.setBounds(0, rowH * 4, getWidth(), rowH);
 
-    waveformDisplay.setBounds(0, rowH * 5, getWidth(), rowH * 2);
+    revSlider.setBounds(0, rowH * 5, getWidth(), rowH * 2);
+
+    playButton.setBounds(0, rowH * 7, getWidth() / 2, rowH);
+    stopButton.setBounds(getWidth() / 2, rowH * 7, getWidth() / 2, rowH);
 }
 
 void DeckGUI::buttonClicked(juce::Button* button)

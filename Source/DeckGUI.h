@@ -51,9 +51,18 @@ private:
 
     juce::FileChooser fChooser{ "Select a file..." };
 
+    juce::Label volLabel;
     juce::Slider volSlider;
+
+    juce::Label speedLabel;
     juce::Slider speedSlider;
+    
+    juce::Label posLabel;
     juce::Slider posSlider;
+
+    juce::Slider revSlider;
+    juce::Label revLabel;
+
 
     DJAudioPlayer* player;
 

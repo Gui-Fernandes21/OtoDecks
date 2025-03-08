@@ -36,6 +36,7 @@
 		BD9EE98A812B65A602DC0059 /* DeckGUI.cpp */ = {isa = PBXBuildFile; fileRef = FA75C5B6FF234C63B8D05839; };
 		BDB6CC037F559EDF3FB60ED1 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = 964D0E150695532AE2F92699; };
 		BF150D51EC7E6500AD4DFA9F /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = 54408A9938AB4E6FF0319F3A; };
+		C8D45B421A8A6304268BA0B8 /* Track.cpp */ = {isa = PBXBuildFile; fileRef = 2C4B8366E07EDF428C0E5BAC; };
 		CD269505CCF9DF0E71911E9E /* Main.cpp */ = {isa = PBXBuildFile; fileRef = 39D9C48BF7F0504841C009BB; };
 		D100E0D49A1A0A20C2C0BC40 /* QuartzCore.framework */ = {isa = PBXBuildFile; fileRef = 3FA06CF31048E60D7DBAB5D9; };
 		D39FFCFD798EEE76B6DE3C79 /* CoreMIDI.framework */ = {isa = PBXBuildFile; fileRef = 3208C16DC384C7739F52ADE6; };
@@ -57,6 +58,7 @@
 		22220DBBEFAE1E1DC30D9950 /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = "~/JUCE/modules/juce_core"; sourceTree = "<absolute>"; };
 		2531D6F3C76508AB7DAF5B4D /* juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = "~/JUCE/modules/juce_events"; sourceTree = "<absolute>"; };
 		2A72F89A649865D75212279E /* include_juce_audio_processors_lv2_libs.cpp */ /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
+		2C4B8366E07EDF428C0E5BAC /* Track.cpp */ /* Track.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Track.cpp; path = ../../Source/Track.cpp; sourceTree = SOURCE_ROOT; };
 		2ED25338F3EEEECD418A4E3B /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
 		3208C16DC384C7739F52ADE6 /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		3487DAE3575D6F81557D0FFE /* include_juce_audio_processors_ara.cpp */ /* include_juce_audio_processors_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_ara.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_ara.cpp; sourceTree = SOURCE_ROOT; };
@@ -68,6 +70,7 @@
 		410E6930C27BECB5F63F764D /* include_juce_graphics_Harfbuzz.cpp */ /* include_juce_graphics_Harfbuzz.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_graphics_Harfbuzz.cpp; path = ../../JuceLibraryCode/include_juce_graphics_Harfbuzz.cpp; sourceTree = SOURCE_ROOT; };
 		447D620A458B116BE24972D1 /* include_juce_graphics_Sheenbidi.c */ /* include_juce_graphics_Sheenbidi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = include_juce_graphics_Sheenbidi.c; path = ../../JuceLibraryCode/include_juce_graphics_Sheenbidi.c; sourceTree = SOURCE_ROOT; };
 		4531BE13DA884AFA571080DD /* WaveformDisplay.h */ /* WaveformDisplay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WaveformDisplay.h; path = ../../Source/WaveformDisplay.h; sourceTree = SOURCE_ROOT; };
+		46E14367F4E29669CD3D127C /* Track.h */ /* Track.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Track.h; path = ../../Source/Track.h; sourceTree = SOURCE_ROOT; };
 		478EA13815495AE89018109F /* juce_audio_utils */ /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = "~/JUCE/modules/juce_audio_utils"; sourceTree = "<absolute>"; };
 		482CC769A18DCCBBF9CA73EB /* Foundation.framework */ /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		49D3EED94DF7CBDEF4AE8016 /* DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
@@ -184,6 +187,8 @@
 		73CAB3305AECF130B6DDE3CA /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				2C4B8366E07EDF428C0E5BAC,
+				46E14367F4E29669CD3D127C,
 				CD89A46ECF859D7FDC13C28F,
 				800D0694F8DFE0C7E2F181FA,
 				FA75C5B6FF234C63B8D05839,
@@ -336,6 +341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8D45B421A8A6304268BA0B8,
 				B964E2559476C0EE681F2359,
 				BD9EE98A812B65A602DC0059,
 				F0A2C7DFFEB8277B0308CC97,

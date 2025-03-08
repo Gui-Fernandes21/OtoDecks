@@ -4,6 +4,8 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="T17Ck8" name="TestJuce">
     <GROUP id="{6B955D0F-E687-1882-A354-9C6FCFD62CCB}" name="Source">
+      <FILE id="yuwtKB" name="Track.cpp" compile="1" resource="0" file="Source/Track.cpp"/>
+      <FILE id="sKskIg" name="Track.h" compile="0" resource="0" file="Source/Track.h"/>
       <FILE id="gZqBCc" name="PlaylistComponent.cpp" compile="1" resource="0"
             file="Source/PlaylistComponent.cpp"/>
       <FILE id="NZRfAO" name="PlaylistComponent.h" compile="0" resource="0"

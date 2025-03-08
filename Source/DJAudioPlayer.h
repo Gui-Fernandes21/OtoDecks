@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <juce_dsp/juce_dsp.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 
 class DJAudioPlayer : public juce::AudioSource {
@@ -30,6 +31,8 @@ class DJAudioPlayer : public juce::AudioSource {
         void setPosition(double posInSecs);
         void setPositionRelative(double pos);
 
+        void setReverb(double ratio);
+
         // get the relative position of the playhead
         double getPositionRelative();
 
@@ -37,6 +40,10 @@ class DJAudioPlayer : public juce::AudioSource {
         void stop();
 
     private:
+
+        juce::dsp::Reverb reverb;
+        juce::dsp::Reverb::Parameters reverbParameters;
+
         juce::AudioFormatManager& formatManager;
         std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
         juce::AudioTransportSource transportSource;

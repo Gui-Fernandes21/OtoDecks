@@ -17,14 +17,43 @@ DJAudioPlayer::~DJAudioPlayer() {};
 // =====================================================================================
 void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) 
 {
+    // Set some default values
+    reverbParameters.roomSize = 0.5f;
+    reverbParameters.damping = 0.5f;
+    reverbParameters.wetLevel = 0.33f;
+    reverbParameters.dryLevel = 0.4f;
+    reverbParameters.width = 1.0f;
+    reverbParameters.freezeMode = 0.0f;
+
+    reverb.setParameters(reverbParameters);
+
+    // Prepare the reverb for the correct sample rate and buffer size
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = (juce::uint32) samplesPerBlockExpected;
+    spec.numChannels = 2; 
+    reverb.prepare(spec);
+
+
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 };
 
-void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) 
+void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
     resampleSource.getNextAudioBlock(bufferToFill);
-};
+
+    juce::AudioBuffer<float>* buffer = bufferToFill.buffer;
+
+    juce::dsp::AudioBlock<float> fullBlock(*buffer);
+
+    auto subBlock = fullBlock.getSubBlock((size_t)bufferToFill.startSample,
+        (size_t)bufferToFill.numSamples);
+
+    juce::dsp::ProcessContextReplacing<float> context(subBlock);
+
+    reverb.process(context);
+}
 
 void DJAudioPlayer::releaseResources() 
 {
@@ -88,8 +117,14 @@ void DJAudioPlayer::start()
 {
     transportSource.start();
 };
-void DJAudioPlayer::stop() 
+void DJAudioPlayer::stop()
 {
     transportSource.stop();
+};
+
+void DJAudioPlayer::setReverb(double ratio)
+{
+    reverbParameters.wetLevel = (float) ratio;
+    reverb.setParameters(reverbParameters);
 };
 

@@ -664,6 +664,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Track.cpp">
+      <Filter>TestJuce\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\PlaylistComponent.cpp">
       <Filter>TestJuce\Source</Filter>
     </ClCompile>
@@ -3525,6 +3528,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Track.h">
+      <Filter>TestJuce\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\PlaylistComponent.h">
       <Filter>TestJuce\Source</Filter>
     </ClInclude>
