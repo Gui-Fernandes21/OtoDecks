@@ -24,7 +24,7 @@ class PlaylistComponent  : public juce::Component,
                            public juce::Button::Listener
 {
 public:
-    PlaylistComponent(DeckGUI* _player1, DeckGUI* _player2);
+    PlaylistComponent(DeckGUI* deck1, DeckGUI* deck2);
     ~PlaylistComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -43,15 +43,16 @@ private:
 
     std::vector<Track> trackTitles;
 
-    DeckGUI* player1;
-    DeckGUI* player2;
-
+    DeckGUI* deck1;
+    DeckGUI* deck2;
 
     juce::FileChooser fChooser{ "Select a file..." };
 
     juce::TextButton loadFileBtn{ "Load into playlist" };
     juce::TextButton playOnFirstDeck{ "Play on Deck 1" };
     juce::TextButton playOnSecondDeck{ "Play on Deck 2" };
+
+    void addSongToPlaylist();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistComponent)
 };

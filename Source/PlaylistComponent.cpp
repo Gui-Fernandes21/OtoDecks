@@ -12,8 +12,8 @@
 #include "PlaylistComponent.h"
 
 //==============================================================================
-PlaylistComponent::PlaylistComponent(DeckGUI* _player1, DeckGUI* _player2):
-                                    player1(_player1), player2(_player2)
+PlaylistComponent::PlaylistComponent(DeckGUI* _deck1, DeckGUI* _deck2):
+                                    deck1(_deck1), deck2(_deck2)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -112,18 +112,33 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber, int c
 
 void PlaylistComponent::buttonClicked(juce::Button* button)
 {   
-    // int id = std::stoi(button->getComponentID().toStdString());
+    //int id = std::stoi(button->getComponentID().toStdString());
 
-    // std::cout << "Button clicked: " << trackTitles[id] << std::endl;
+    //std::cout << "Button clicked: " << trackTitles[id].getFileName() << std::endl;
 
     if (button == &loadFileBtn) {
-        auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
-
-        fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser) {
-                juce::File chosenFile = chooser.getResult();
-                trackTitles.push_back(Track{ chosenFile });
-        });
-
-        repaint();
+        addSongToPlaylist();
     }
+    
+    if (button == &playOnFirstDeck) {
+        int selectedRowId = tableComponent.getSelectedRow();
+        deck1->uploadFileToBePlayed(trackTitles[selectedRowId].getFile());
+    }
+    if (button == &playOnSecondDeck) {
+        int selectedRowId = tableComponent.getSelectedRow();
+        deck2->uploadFileToBePlayed(trackTitles[selectedRowId].getFile());
+    }
+};
+
+
+void PlaylistComponent::addSongToPlaylist()
+{
+    auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
+
+    fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser) {
+        juce::File chosenFile = chooser.getResult();
+        trackTitles.push_back(Track{ chosenFile });
+        tableComponent.updateContent();
+    });
+
 };

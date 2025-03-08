@@ -38,7 +38,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     playButton.addListener(this);
     stopButton.addListener(this);
-    loadButton.addListener(this);
 
 
 
@@ -68,6 +67,9 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     volLabel.attachToComponent(&volSlider, true);
     volSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
 
+    revSlider.addListener(this);
+    revSlider.setRange(0.0, 1.0);
+    revSlider.setNumDecimalPlacesToDisplay(2);
     revSlider.setTextValueSuffix(" Rev.");
     revLabel.attachToComponent(&revSlider, true);
     revSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
@@ -108,7 +110,6 @@ void DeckGUI::resized()
 {
     double rowH = getHeight() / 8;
 
-    //loadButton.setBounds(0, getHeight() - rowH, getWidth(), rowH);
     waveformDisplay.setBounds(0, 0, getWidth(), rowH * 2);
     posSlider.setBounds(0, rowH * 2, getWidth(), rowH);
 
@@ -131,17 +132,6 @@ void DeckGUI::buttonClicked(juce::Button* button)
         std::cout << "Stop Button was clicked" << std::endl;
         player->stop();
     };
-    if (button == &loadButton) {
-        auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
-
-        fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
-            {
-                juce::File chosenFile = chooser.getResult();
-                player->loadURL(juce::URL{ chosenFile });
-                waveformDisplay.loadURL(juce::URL{ chosenFile });
-            });
-
-    }
 }
 
 void DeckGUI::sliderValueChanged(juce::Slider* slider)
@@ -154,6 +144,9 @@ void DeckGUI::sliderValueChanged(juce::Slider* slider)
     }
     if (slider == &posSlider) {
         player->setPositionRelative(slider->getValue());
+    }
+    if (slider == &revSlider) {
+        player->setReverb(slider->getValue());
     }
 }
 
@@ -175,4 +168,10 @@ void DeckGUI::filesDropped(const juce::StringArray& files, int x, int y)
 void DeckGUI::timerCallback()
 {
     waveformDisplay.setPositionRelative(player->getPositionRelative());
+};
+
+void DeckGUI::uploadFileToBePlayed(juce::File file)
+{
+    player->loadURL(juce::URL{ file });
+    waveformDisplay.loadURL(juce::URL{ file });
 };

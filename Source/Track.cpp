@@ -20,6 +20,11 @@ Track::~Track()
 {
 };
 
+juce::File Track::getFile()
+{
+    return this->file;
+};
+
 juce::String Track::getFileName()
 {
     return this->fileName;

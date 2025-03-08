@@ -22,6 +22,7 @@ public:
 
     juce::String getFileName();
     juce::URL getFileURL();
+    juce::File getFile();
 private:
     juce::File file;
     juce::String fileName;

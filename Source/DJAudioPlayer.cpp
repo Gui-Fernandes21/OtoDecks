@@ -18,10 +18,10 @@ DJAudioPlayer::~DJAudioPlayer() {};
 void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) 
 {
     // Set some default values
-    reverbParameters.roomSize = 0.5f;
+    reverbParameters.roomSize = 0.9f;
     reverbParameters.damping = 0.5f;
-    reverbParameters.wetLevel = 0.33f;
-    reverbParameters.dryLevel = 0.4f;
+    reverbParameters.wetLevel = 0;
+    reverbParameters.dryLevel = 0.2f;
     reverbParameters.width = 1.0f;
     reverbParameters.freezeMode = 0.0f;
 
@@ -41,19 +41,23 @@ void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate
 
 void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    resampleSource.getNextAudioBlock(bufferToFill);
+    // 1) Ensure the buffer is zeroed before processing
+    bufferToFill.clearActiveBufferRegion();
 
-    juce::AudioBuffer<float>* buffer = bufferToFill.buffer;
+    // 2) Fetch audio data from the transport source first
+    transportSource.getNextAudioBlock(bufferToFill);
 
-    juce::dsp::AudioBlock<float> fullBlock(*buffer);
+    // 3) Wrap the buffer into a DSP AudioBlock for processing
+    juce::dsp::AudioBlock<float> fullBlock(*bufferToFill.buffer);
+    juce::dsp::ProcessContextReplacing<float> context(fullBlock);
 
-    auto subBlock = fullBlock.getSubBlock((size_t)bufferToFill.startSample,
-        (size_t)bufferToFill.numSamples);
-
-    juce::dsp::ProcessContextReplacing<float> context(subBlock);
-
+    // 4) Process the audio through the reverb
     reverb.process(context);
+
+    // 5) Now apply resampling AFTER reverb processing
+    resampleSource.getNextAudioBlock(bufferToFill);
 }
+
 
 void DJAudioPlayer::releaseResources() 
 {
@@ -108,6 +112,13 @@ void DJAudioPlayer::setPositionRelative(double pos) {
     }
 };
 
+void DJAudioPlayer::setReverb(double ratio)
+{
+    reverb.setEnabled(true);
+    reverbParameters.wetLevel = (float)ratio;
+    reverb.setParameters(reverbParameters);
+};
+
 double DJAudioPlayer::getPositionRelative()
 {
     return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
@@ -122,9 +133,4 @@ void DJAudioPlayer::stop()
     transportSource.stop();
 };
 
-void DJAudioPlayer::setReverb(double ratio)
-{
-    reverbParameters.wetLevel = (float) ratio;
-    reverb.setParameters(reverbParameters);
-};
 

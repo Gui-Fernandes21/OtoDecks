@@ -43,13 +43,12 @@ public:
 
     void timerCallback() override;
 
+    void uploadFileToBePlayed(juce::File file);
+
 private:
 
     juce::TextButton playButton{ "PLAY" };
     juce::TextButton stopButton{ "STOP" };
-    juce::TextButton loadButton{ "LOAD" };
-
-    juce::FileChooser fChooser{ "Select a file..." };
 
     juce::Label volLabel;
     juce::Slider volSlider;
