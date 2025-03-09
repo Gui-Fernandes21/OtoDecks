@@ -17,44 +17,16 @@ DJAudioPlayer::~DJAudioPlayer() {};
 // =====================================================================================
 void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) 
 {
-    // Set some default values
-    reverbParameters.roomSize = 0.9f;
-    reverbParameters.damping = 0.5f;
-    reverbParameters.wetLevel = 0;
-    reverbParameters.dryLevel = 0.2f;
-    reverbParameters.width = 1.0f;
-    reverbParameters.freezeMode = 0.0f;
-
-    reverb.setParameters(reverbParameters);
-
-    // Prepare the reverb for the correct sample rate and buffer size
-    juce::dsp::ProcessSpec spec;
-    spec.sampleRate = sampleRate;
-    spec.maximumBlockSize = (juce::uint32) samplesPerBlockExpected;
-    spec.numChannels = 2; 
-    reverb.prepare(spec);
-
-
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 };
 
 void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    // 1) Ensure the buffer is zeroed before processing
     bufferToFill.clearActiveBufferRegion();
 
-    // 2) Fetch audio data from the transport source first
     transportSource.getNextAudioBlock(bufferToFill);
 
-    // 3) Wrap the buffer into a DSP AudioBlock for processing
-    juce::dsp::AudioBlock<float> fullBlock(*bufferToFill.buffer);
-    juce::dsp::ProcessContextReplacing<float> context(fullBlock);
-
-    // 4) Process the audio through the reverb
-    reverb.process(context);
-
-    // 5) Now apply resampling AFTER reverb processing
     resampleSource.getNextAudioBlock(bufferToFill);
 }
 
@@ -78,6 +50,7 @@ void DJAudioPlayer::loadURL(juce::URL audioUrl)
         readerSource.reset(newSource.release());
     }
 };
+
 void DJAudioPlayer::setGain(double gain) 
 {
     if (gain < 0 || gain > 1.0) {
@@ -87,6 +60,7 @@ void DJAudioPlayer::setGain(double gain)
         transportSource.setGain(gain);
     };
 };
+
 void DJAudioPlayer::setSpeed(double ratio) 
 {
     if (ratio < 0 || ratio > 10.0) {
@@ -96,6 +70,7 @@ void DJAudioPlayer::setSpeed(double ratio)
         resampleSource.setResamplingRatio(ratio);
     };
 };
+
 void DJAudioPlayer::setPosition(double posInSecs) 
 {
     transportSource.setPosition(posInSecs);
@@ -110,13 +85,6 @@ void DJAudioPlayer::setPositionRelative(double pos) {
         double posInSecs = transportSource.getLengthInSeconds() * pos;
         setPosition(posInSecs);
     }
-};
-
-void DJAudioPlayer::setReverb(double ratio)
-{
-    reverb.setEnabled(true);
-    reverbParameters.wetLevel = (float)ratio;
-    reverb.setParameters(reverbParameters);
 };
 
 double DJAudioPlayer::getPositionRelative()

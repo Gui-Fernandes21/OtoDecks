@@ -32,16 +32,15 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    /* IMPLEMENT BUTTON LISTENER */
     void buttonClicked(juce::Button*) override;
 
-    /* Implement slider::listener */
     void sliderValueChanged(juce::Slider*) override;
 
     bool isInterestedInFileDrag(const juce::StringArray &files) override;
     void filesDropped(const juce::StringArray& files, int x, int y) override;
 
     void timerCallback() override;
+    void mouseDown(const juce::MouseEvent& event) override;
 
     void uploadFileToBePlayed(juce::File file);
 
@@ -49,6 +48,11 @@ private:
 
     juce::TextButton playButton{ "PLAY" };
     juce::TextButton stopButton{ "STOP" };
+
+    juce::TextButton hotCueButton1{ "Cue 1" };
+    juce::TextButton hotCueButton2{ "Cue 2" };
+    double cuePoint1 = -1.0;
+    double cuePoint2 = -1.0;
 
     juce::Label volLabel;
     juce::Slider volSlider;
