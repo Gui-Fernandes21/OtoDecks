@@ -25,7 +25,9 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(hotCueButton1);
     addAndMakeVisible(hotCueButton2);
     hotCueButton1.addListener(this);
+    hotCueButton1.addMouseListener(this, false);
     hotCueButton2.addListener(this);
+    hotCueButton2.addMouseListener(this, false);
 
     addAndMakeVisible(volSlider);
 
@@ -119,37 +121,13 @@ void DeckGUI::buttonClicked(juce::Button* button)
     if (button == &playButton) {
         std::cout << "Play Button was clicked" << std::endl;
         player->start();
+        return;
     };
     if (button == &stopButton) {
         std::cout << "Stop Button was clicked" << std::endl;
         player->stop();
+        return;
     };
-
-    if (button == &hotCueButton1)
-    {
-        if (cuePoint1 < 0.0)
-        {
-            cuePoint1 = player->getPositionRelative();
-            hotCueButton1.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
-        }
-        else
-        {
-            player->setPositionRelative(cuePoint1);
-        }
-    }
-
-    if (button == &hotCueButton2)
-    {
-        if (cuePoint2 < 0.0)
-        {
-            cuePoint2 = player->getPositionRelative();
-            hotCueButton2.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
-        }
-        else
-        {
-            player->setPositionRelative(cuePoint2);
-        }
-    }
 }
 
 void DeckGUI::sliderValueChanged(juce::Slider* slider)
@@ -182,6 +160,7 @@ void DeckGUI::filesDropped(const juce::StringArray& files, int x, int y)
 
 void DeckGUI::timerCallback()
 {
+    posSlider.setValue(player->getPositionRelative());
     waveformDisplay.setPositionRelative(player->getPositionRelative());
 };
 
@@ -193,17 +172,43 @@ void DeckGUI::uploadFileToBePlayed(juce::File file)
 
 void DeckGUI::mouseDown(const juce::MouseEvent& event)
 {
+    std::cout << "click" << std::endl;
+
     if (event.mods.isRightButtonDown())
     {
         if (hotCueButton1.isMouseOver())
         {
             cuePoint1 = -1.0;
-            hotCueButton1.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            hotCueButton1.setColour(juce::TextButton::buttonColourId, juce::LookAndFeel::getDefaultLookAndFeel().findColour(juce::TextButton::buttonColourId));
         }
         if (hotCueButton2.isMouseOver())
         {
             cuePoint2 = -1.0;
-            hotCueButton2.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            hotCueButton2.setColour(juce::TextButton::buttonColourId, juce::LookAndFeel::getDefaultLookAndFeel().findColour(juce::TextButton::buttonColourId));
+        }
+    }
+    else {
+        if (hotCueButton1.isMouseOver()) {
+            if (cuePoint1 < 0.0)
+            {
+                cuePoint1 = player->getPositionRelative();
+                hotCueButton1.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+            }
+            else
+            {
+                player->setPositionRelative(cuePoint1);
+            }
+        }
+        if (hotCueButton2.isMouseOver()) {
+            if (cuePoint2 < 0.0)
+            {
+                cuePoint2 = player->getPositionRelative();
+                hotCueButton2.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
+            }
+            else
+            {
+                player->setPositionRelative(cuePoint2);
+            }
         }
     }
 }

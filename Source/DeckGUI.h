@@ -21,7 +21,8 @@ class DeckGUI  : public juce::Component,
                  public juce::Button::Listener,
                  public juce::Slider::Listener,
                  public juce::FileDragAndDropTarget,
-                 public juce::Timer
+                 public juce::Timer,
+                 public juce::MouseListener
 {
 public:
     DeckGUI(DJAudioPlayer* player,
@@ -40,6 +41,7 @@ public:
     void filesDropped(const juce::StringArray& files, int x, int y) override;
 
     void timerCallback() override;
+
     void mouseDown(const juce::MouseEvent& event) override;
 
     void uploadFileToBePlayed(juce::File file);

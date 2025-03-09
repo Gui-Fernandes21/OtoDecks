@@ -20,7 +20,6 @@ WaveformDisplay::WaveformDisplay(juce::AudioFormatManager& formatManagerToUse,
     fileLoaded = false;
 
     audioThumb.addChangeListener(this);
-
 }
 
 WaveformDisplay::~WaveformDisplay()

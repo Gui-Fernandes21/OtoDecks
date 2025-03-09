@@ -155,10 +155,7 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
         return;
     }
     else {
-        int id = std::stoi(button->getComponentID().toStdString());
-        std::cout << "size of array: " << trackTitles.size() << std::endl;
-        std::cout << "index to be removed: "  << id << std::endl;
-
+        int id = std::stoi(button->getComponentID().toStdString()); 
         deleteTrackFromPlaylist(id);
     }
 };
