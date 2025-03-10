@@ -27,9 +27,9 @@
 // PlaylistComponent: Handles the track list and user interactions with the playlist.
 //
 class PlaylistComponent : public juce::Component,
-    public juce::TableListBoxModel, // Manages table data rendering
-    public juce::Button::Listener,  // Handles button interactions
-    public juce::Slider::Listener   // Handles slider interactions
+                          public juce::TableListBoxModel, // Manages table data rendering
+                          public juce::Button::Listener,  // Handles button interactions
+                          public juce::Slider::Listener   // Handles slider interactions
 {
 public:
     // Constructor: Initializes the playlist with references to both decks and players.
@@ -38,19 +38,12 @@ public:
     ~PlaylistComponent() override;
 
     void paint(juce::Graphics&) override;
-
     void resized() override;
-
-    // Returns the total number of rows in the playlist table.
     int getNumRows() override;
-
-    // Paints the background of a row in the playlist table.
     void paintRowBackground(juce::Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
-
-    // Paints the individual cells in the playlist table.
     void paintCell(juce::Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
 
-    // Handles slider movements (e.g., crossfade slider).
+    // Handles crossfade slider movements.
     void sliderValueChanged(juce::Slider*) override;
 
     // Deletes a track from the playlist based on its index.

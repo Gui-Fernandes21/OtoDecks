@@ -25,9 +25,9 @@
 // It allows controlling playback, volume, speed, position, and hot cues.
 //
 class DeckGUI : public juce::Component,
-    public juce::Button::Listener,  // Handles button clicks
-    public juce::Slider::Listener,  // Handles slider movements
-    public juce::Timer              // Updates UI periodically
+                public juce::Button::Listener,  // Handles button clicks
+                public juce::Slider::Listener,  // Handles slider movements
+                public juce::Timer              // Updates UI periodically
 {
 public:
     // Constructor: Initializes the DeckGUI with a DJAudioPlayer instance,
