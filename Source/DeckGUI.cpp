@@ -22,60 +22,46 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
 
+    //initiation of the hot cue buttons together with their mouse listeners.
+    addAndMakeVisible(hotCueButton1);
+    addAndMakeVisible(hotCueButton2);
+    hotCueButton1.addMouseListener(this, false);
+    hotCueButton2.addMouseListener(this, false);
+
     addAndMakeVisible(volSlider);
-    addAndMakeVisible(volLabel);
 
     addAndMakeVisible(speedSlider);
-    addAndMakeVisible(speedLabel);
     
     addAndMakeVisible(posSlider);
-    addAndMakeVisible(posLabel);
-
-    addAndMakeVisible(revSlider);
-    addAndMakeVisible(revLabel);
 
     addAndMakeVisible(waveformDisplay);
 
     playButton.addListener(this);
     stopButton.addListener(this);
 
-
-
+    // initiation of speed slider
     speedSlider.addListener(this);
     speedSlider.setValue(1.0);
     speedSlider.setRange(0.0, 10.0);
     speedSlider.setNumDecimalPlacesToDisplay(2);
     speedSlider.setTextValueSuffix(" Speed.");
-    speedLabel.attachToComponent(&speedSlider, true);
     speedSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
 
-
+    // initiation of position slider
     posSlider.addListener(this);
     posSlider.setRange(0.0, 1.0);
-    posSlider.setTooltip("Drag slider to control where the song should play from");
-    //posSlider.setSliderStyle(juce::Slider::LinearBar);
-    posLabel.setText(juce::String("Position of the music"), juce::dontSendNotification);
-    posLabel.attachToComponent(&volSlider, true);
     posSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
 
 
+    // Volume slider initiation
     volSlider.addListener(this);
     volSlider.setValue(.5);
     volSlider.setRange(0.0, 1.0);
     volSlider.setNumDecimalPlacesToDisplay(2);
-    volSlider.setTextValueSuffix(" Vol.");
-    volLabel.attachToComponent(&volSlider, true);
-    volSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+    volSlider.setTextValueSuffix(" Volume.");
+    volSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 80, 20);
+    volSlider.setSliderStyle(juce::Slider::Rotary);
 
-    revSlider.addListener(this);
-    revSlider.setRange(0.0, 1.0);
-    revSlider.setNumDecimalPlacesToDisplay(2);
-    revSlider.setTextValueSuffix(" Rev.");
-    revLabel.attachToComponent(&revSlider, true);
-    revSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
-    revSlider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
-    revSlider.setTooltip("Drag slider to control the reverb");
-    
 
     startTimer(500);
 
@@ -88,13 +74,6 @@ DeckGUI::~DeckGUI()
 
 void DeckGUI::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (juce::Colours::grey);
@@ -102,21 +81,21 @@ void DeckGUI::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (14.0f));
-    // g.drawText ("DeckGUI", getLocalBounds(),
-                //juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void DeckGUI::resized()
 {
     double rowH = getHeight() / 8;
+    double halfW = getWidth() / 2;
 
     waveformDisplay.setBounds(0, 0, getWidth(), rowH * 2);
-    posSlider.setBounds(0, rowH * 2, getWidth(), rowH);
+    posSlider.setBounds(0, rowH * 2, getWidth(), rowH / 2);
 
-    speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
-    volSlider.setBounds(0, rowH * 4, getWidth(), rowH);
+    hotCueButton1.setBounds(0, rowH * 2.5, halfW, rowH);
+    hotCueButton2.setBounds(halfW, rowH * 2.5, halfW, rowH);
 
-    revSlider.setBounds(0, rowH * 5, getWidth(), rowH * 2);
+    speedSlider.setBounds(0, rowH * 4, getWidth(), rowH);
+    volSlider.setBounds(0, rowH * 5, getWidth(), rowH * 1.5);
 
     playButton.setBounds(0, rowH * 7, getWidth() / 2, rowH);
     stopButton.setBounds(getWidth() / 2, rowH * 7, getWidth() / 2, rowH);
@@ -127,10 +106,12 @@ void DeckGUI::buttonClicked(juce::Button* button)
     if (button == &playButton) {
         std::cout << "Play Button was clicked" << std::endl;
         player->start();
+        return;
     };
     if (button == &stopButton) {
         std::cout << "Stop Button was clicked" << std::endl;
         player->stop();
+        return;
     };
 }
 
@@ -145,33 +126,54 @@ void DeckGUI::sliderValueChanged(juce::Slider* slider)
     if (slider == &posSlider) {
         player->setPositionRelative(slider->getValue());
     }
-    if (slider == &revSlider) {
-        player->setReverb(slider->getValue());
-    }
 }
-
-bool DeckGUI::isInterestedInFileDrag(const juce::StringArray& files) 
-{
-    std::cout << "DeckGUI::isInterestedInFileDrag" << std::endl;
-    return true;
-};
-
-void DeckGUI::filesDropped(const juce::StringArray& files, int x, int y)
-{
-    std::cout << "DeckGUI::filesDropped" << std::endl;
-    if (files.size() == 1) {
-        player->loadURL(juce::URL{ juce::File { files[0] } });
-        waveformDisplay.loadURL(juce::URL{ juce::File { files[0] } });
-    }
-};
 
 void DeckGUI::timerCallback()
 {
+    // set the value of the position slider for every change on the playhead
+    posSlider.setValue(player->getPositionRelative());
+    // set the value of the playhead for the audio position
     waveformDisplay.setPositionRelative(player->getPositionRelative());
 };
 
+// public function to let the PlaylistComponent Upload the selected Track from the playlist
 void DeckGUI::uploadFileToBePlayed(juce::File file)
 {
     player->loadURL(juce::URL{ file });
     waveformDisplay.loadURL(juce::URL{ file });
 };
+
+void DeckGUI::mouseDown(const juce::MouseEvent& event)
+{
+    bool isRightClick = event.mods.isRightButtonDown();
+
+    handleHotCueClick(hotCueButton1, cuePoint1, juce::Colours::red, isRightClick);
+    handleHotCueClick(hotCueButton2, cuePoint2, juce::Colours::green, isRightClick);
+}
+
+void DeckGUI::handleHotCueClick(juce::TextButton& button, double& cuePoint, juce::Colour cueColor, bool isRightClick)
+{
+    if (!button.isMouseOver())
+        return;
+
+    if (isRightClick)
+    {
+        // Reset cue point
+        cuePoint = -1.0;
+        button.setColour(juce::TextButton::buttonColourId,
+            juce::LookAndFeel::getDefaultLookAndFeel().findColour(juce::TextButton::buttonColourId));
+    }
+    else
+    {
+        // Set or jump to hot cue
+        if (cuePoint < 0.0)
+        {
+            cuePoint = player->getPositionRelative();
+            button.setColour(juce::TextButton::buttonColourId, cueColor);
+        }
+        else
+        {
+            player->setPositionRelative(cuePoint);
+        }
+    }
+}

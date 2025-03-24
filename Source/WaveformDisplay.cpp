@@ -20,7 +20,6 @@ WaveformDisplay::WaveformDisplay(juce::AudioFormatManager& formatManagerToUse,
     fileLoaded = false;
 
     audioThumb.addChangeListener(this);
-
 }
 
 WaveformDisplay::~WaveformDisplay()
@@ -63,9 +62,6 @@ void WaveformDisplay::paint (juce::Graphics& g)
 
 void WaveformDisplay::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
 }
 
 void WaveformDisplay::loadURL(juce::URL audioURL) 
@@ -78,7 +74,6 @@ void WaveformDisplay::loadURL(juce::URL audioURL)
     } else {
         std::cout << "not loaded" << std::endl;
     };
-
 };
 
 void WaveformDisplay::changeListenerCallback(juce::ChangeBroadcaster* source)
@@ -95,6 +90,4 @@ void WaveformDisplay::setPositionRelative(double pos)
         position = pos;
         repaint(); 
     }
-
-
 };

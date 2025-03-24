@@ -29,7 +29,6 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
-
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbCache{100};
 
@@ -41,7 +40,7 @@ private:
 
     juce::MixerAudioSource mixerSource;
 
-    PlaylistComponent playlistComponent{&deckGUI1,&deckGUI2};
+    PlaylistComponent playlistComponent{&deckGUI1,&deckGUI2, &player1, &player2};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

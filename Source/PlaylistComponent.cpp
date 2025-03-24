@@ -12,8 +12,9 @@
 #include "PlaylistComponent.h"
 
 //==============================================================================
-PlaylistComponent::PlaylistComponent(DeckGUI* _deck1, DeckGUI* _deck2):
-                                    deck1(_deck1), deck2(_deck2)
+PlaylistComponent::PlaylistComponent(DeckGUI* _deck1, DeckGUI* _deck2, DJAudioPlayer *_player1, DJAudioPlayer *_player2):
+                                    deck1(_deck1), deck2(_deck2),
+                                    player1(_player1), player2(_player2)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -29,13 +30,33 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deck1, DeckGUI* _deck2):
     addAndMakeVisible(playOnFirstDeck);
     addAndMakeVisible(playOnSecondDeck);
 
+
     loadFileBtn.addListener(this);
     playOnFirstDeck.addListener(this);
     playOnSecondDeck.addListener(this);
+
+
+
+    // CROSSFADE SLIDER
+    crossFadeSlider.addListener(this);
+    addAndMakeVisible(crossFadeSlider);
+    crossFadeSlider.setRange(0.0, 1.0);
+    crossFadeSlider.setValue(0.5);
+    crossFadeSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
+
+    
+    setLookAndFeel(&crossfadeLookAndFeel);
+
+    addAndMakeVisible(crossFadeLabel);
+    crossFadeLabel.setText("Crossfader", juce::dontSendNotification);
+    crossFadeLabel.attachToComponent(&crossFadeSlider, false);
+    crossFadeLabel.setJustificationType(juce::Justification::centred);
+
 }
 
 PlaylistComponent::~PlaylistComponent()
 {
+    setLookAndFeel(nullptr);
 }
 
 void PlaylistComponent::paint (juce::Graphics& g)
@@ -54,6 +75,7 @@ void PlaylistComponent::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (14.0f));
+
     
 }
 
@@ -67,7 +89,11 @@ void PlaylistComponent::resized()
     playOnFirstDeck.setBounds(0, rowHeight, getWidth()/2, rowHeight);
     playOnSecondDeck.setBounds(getWidth() / 2, rowHeight, getWidth() / 2, rowHeight);
 
-    tableComponent.setBounds(0, rowHeight*2, getWidth(), rowHeight * 7);
+    tableComponent.setBounds(0, rowHeight*2, getWidth(), rowHeight * 6);
+
+
+
+    crossFadeSlider.setBounds(0, rowHeight * 7, getWidth(), rowHeight);
 }
 
 
@@ -82,7 +108,7 @@ void PlaylistComponent::paintRowBackground(juce::Graphics& g, int rowNumber, int
         g.fillAll(juce::Colours::orange);
     }
     else {
-        g.fillAll(juce::Colours::darkgoldenrod);
+        g.fillAll(juce::Colours::darkkhaki);
     }
 };
 
@@ -112,24 +138,35 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber, int c
 
 void PlaylistComponent::buttonClicked(juce::Button* button)
 {   
-    //int id = std::stoi(button->getComponentID().toStdString());
-
-    //std::cout << "Button clicked: " << trackTitles[id].getFileName() << std::endl;
 
     if (button == &loadFileBtn) {
         addSongToPlaylist();
+        return;
     }
     
     if (button == &playOnFirstDeck) {
         int selectedRowId = tableComponent.getSelectedRow();
         deck1->uploadFileToBePlayed(trackTitles[selectedRowId].getFile());
+        return;
     }
     if (button == &playOnSecondDeck) {
         int selectedRowId = tableComponent.getSelectedRow();
         deck2->uploadFileToBePlayed(trackTitles[selectedRowId].getFile());
+        return;
+    }
+    else {
+        int id = std::stoi(button->getComponentID().toStdString()); 
+        deleteTrackFromPlaylist(id);
     }
 };
 
+void PlaylistComponent::deleteTrackFromPlaylist(int id)
+{
+    if (id >= 0 && id < trackTitles.size()) {
+        trackTitles.erase(std::next(trackTitles.begin(), id));
+    }
+    tableComponent.updateContent();
+}
 
 void PlaylistComponent::addSongToPlaylist()
 {
@@ -142,3 +179,26 @@ void PlaylistComponent::addSongToPlaylist()
     });
 
 };
+
+
+void PlaylistComponent::sliderValueChanged(juce::Slider* slider)
+{
+    if (slider == &crossFadeSlider)
+    {
+        float crossfadePos = crossFadeSlider.getValue();
+
+        // If the slider is near the center, snap it to 0.5
+        if (std::abs(crossfadePos - 0.5f) < 0.05f)
+        {
+            crossfadePos = 0.5f; // Snap to center
+            crossFadeSlider.setValue(0.5f, juce::dontSendNotification); // Prevent loop
+        }
+
+        // Map crossfade position to deck volumes
+        float deck1Volume = 1.0f - juce::jmap(crossfadePos, 0.0f, 1.0f, 0.0f, 1.0f);
+        float deck2Volume = juce::jmap(crossfadePos, 0.0f, 1.0f, 0.0f, 1.0f);
+
+        player1->setGain(deck1Volume);
+        player2->setGain(deck2Volume);
+    }
+}
